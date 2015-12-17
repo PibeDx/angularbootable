@@ -1,1 +1,102 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700,300);
 
+html {
+    box-sizing: border-box;
+}
+*, *:before, *:after {
+    box-sizing: inherit;
+    margin: 0px;
+    padding: 0px;
+}
+body {
+    background-color: #fff;
+}
+.opts {
+    align-items: flex-end;
+    justify-content: space-between;
+    display: flex;
+    flex-flow: row nowrap;
+    width: 100%;
+}
+.tools {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    margin-top: 10px;
+    width: 100%;
+}
+.buttons > .btn:not(:last-child) {
+    margin-right: 8px;
+}
+.btn {
+    font-family: roboto;
+    font-size: 15px;
+    transition: all .26s ease;
+}
+.btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+    color: #fff;
+}
+.btn-primary:hover {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+.form-control, .btn {
+    border-radius: 2px;
+}
+.form-control.ng-invalid.ng-dirty.ng-touchedx {
+    border-bottom: 2px solid #d53400;
+}
+a {
+    cursor: pointer;
+    text-decoration: none !important;
+}
+.pagination > .active a {
+    background-color: #3498db;
+    border-color: #3498db;
+}
+.form-group-inline {
+    display: flex;
+    flex-flow: column nowrap;
+
+}
+.form-group-inline > #page-size {
+    width: 60px;
+}
+#search-box {
+    width: 244px;
+}
+.filters {
+    align-items: flex-end;
+    display: flex;
+}
+.filters > *:not(:last-child) {
+    margin-right: 8px;
+}
+#datatable {
+    margin-top: 20px;
+}
+#datatable tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+label {
+    white-space: nowrap;
+}
+@media screen and (min-width: 570px) {
+    .form-group-inline { align-items: flex-end; flex-flow: row nowrap }
+    .form-group-inline #page-size {
+        margin-left: 12px;
+    }
+}
+@media screen and (min-width: 768px) {
+    select.form-control {
+        max-width: 1000px;
+    }
+    #search-box {
+        width: 420px;
+    }
+    .filters > .form-control {
+        width: auto;
+    }
+}

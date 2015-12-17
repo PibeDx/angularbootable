@@ -1,1 +1,290 @@
+<!DOCTYPE>
+<html lang="es" ng-app="datatableApp">
+	<head>
+        <title>AnguBootable</title>
+		<meta charset="utf-8" />
+		<!--
+		<link rel="stylesheet"
+			href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+		-->
+		<link rel="stylesheet" href="assets/css/bootstrap_paper.min.css" />
+		<link rel="stylesheet"
+			href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="assets/css/style.css" />
+	</head>
+	<body>
+		<section class="container-fluid" ng-controller="datatableController"
+			style="padding-top: 40px;">
+			<div class="panel panel-default" >
+				<div class="panel-heading" style="font-size: 16px">Gestión de diplomados</div>
+				<div class="panel-body">
+					<!-- Toolbar -->
+					<section class="toolbar">
+					    <!-- datatable options -->
+					    <div class="opts">
+					        <div class="form-group-inline">
+					            <label for="items">Items por página</label>
+								<input type="number" min="1" max="100" value="5"
+									id="page-size" ng-model="pageSize" class="form-control" />
+					        </div>
+					        <div class="input-group" id="search-box">
+					            <span class="input-group-addon">
+					                <i class="fa fa-search"></i>
+					            </span>
+					            <input type="text" id="serch" placeholder="Buscar..."
+									ng-model="q" class="form-control" />
+					        </div>
+					    </div>
+					    <!-- create and filters -->
+					    <div class="tools">
+					        <div class="buttons">
+					            <a data-toggle="modal" data-target="#newCourseModal"
+									class="btn btn-primary">
+					                Crear nuevo
+					            </a>
+					        </div>
+					        <!-- filters -->
+					        <div class="filters">
+					            <label>Filtrar por: </label>
+					            <select class="form-control" ng-model="categorySelec"
+					                ng-options="cat as cat.nombre for cat in categories"
+									ng-change="applyFilters()">
+									<option value="" seleced>Todas</option>
+					            </select>
+					            <select class="form-control" ng-model="stateSelec"
+					                ng-options="state as state.nombre for state in states"
+									ng-change="applyFilters()">
+					            </select>
+					        </div>
+					    </div>
+					</section>
 
+					<!-- datatable -->
+					<section id="datatable">
+					    <table class="table table-bordered">
+					        <thead>
+					            <tr>
+					                <th>#</th>
+					                <th>Nombre</th>
+					                <th>Créditos</th>
+					                <th>Duración</th>
+					                <th>Horas</th>
+					                <th>Costo</th>
+					            </tr>
+					        </thead>
+					        <tbody>
+								<!--
+					            <tr ng-repeat="curso in cursos track by $index">
+					                <td>{{$index + 1}}</td>
+					                <td>{{curso.nombre}}</td>
+					                <td>{{curso.creditos}}</td>
+					                <td>{{curso.duracion}}</td>
+					                <td>{{curso.horas}}</td>
+					                <td>
+					                    <a class="btn-xs btn-primary">Ver costo</a>
+					                </td>
+					            </tr>
+								-->
+								<tr dir-paginate="course in courses | filter: q | itemsPerPage: pageSize"
+									current-page="currentPage">
+					                <td>{{$index + 1}}</td>
+					                <td>{{course.nombre}}</td>
+					                <td>{{course.creditos}}</td>
+					                <td>{{course.duracion}}</td>
+					                <td>{{course.horas}}</td>
+					                <td>
+					                    <a class="btn-xs btn-primary">Ver costo</a>
+					                </td>
+					            </tr>
+					        </tbody>
+					    </table>
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+					        	<dir-pagination-controls boundary-links="true"
+					        		template-url="assets/tpl/pagination.tpl.html"
+									class="pull-right">
+					        	</dir-pagination-controls>
+							</div>
+				        </div>
+					</section>
+				</div>
+
+				<!-- modals -->
+			</div>
+
+			<section id="modals">
+				<div class="modal fade in" id="newCourseModal" tabindex="-1" role="dialog">
+					<div class="modal-dialog" role="document" style="width: 400px">
+						<form name="newCourseForm" novalidate ng-submit="createCourse()">
+						<div class="modal-content">
+							<div class="modal-header">
+								<button type="button" class="close" data-dismiss="modal"
+									aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+				        		<h4 class="modal-title" id="myModalLabel">Nuevo curso</h4>
+							</div>
+							<div class="modal-body">
+								<!-- tabs -->
+								<ul class="nav nav-tabs" role="tablist">
+									<li role="presentation" class="active">
+										<a href="#basic" aria-controls="home" role="tab"
+											data-toggle="tab">Básica</a>
+									</li>
+									<li role="presentation">
+										<a href="#tech" aria-controls="home" role="tab"
+											data-toggle="tab">Técnica</a>
+									</li>
+									<li role="presentation">
+										<a href="#investment" aria-controls="profile"
+											role="tab" data-toggle="tab">Inversión</a>
+									</li>
+								</ul>
+								<!-- tab content -->
+								<div class="tab-content" style="padding: 20px 30px">
+									<!-- contenido básico -->
+									<div role="tabpanel" class="tab-pane fade in active" id="basic">
+										<!-- nombre del curso -->
+										<div class="form-group" ng-class="{ 'has-error': newCourseForm.name.$touched && newCourseForm.name.$invalid }">
+											<label for="name">Nombre</label>
+											<div class="input-group">
+												<span class="input-group-addon">
+													<i class="fa fa-graduation-cap"></i>
+												</span>
+												<input type="text" name="name" class="form-control"
+													id="name" ng-model="newCourse.nombre"
+													required/>
+											</div>
+											<div class="help-block" ng-messages="newCourseForm.name.$error"
+												ng-if="newCourseForm.name.$touched">
+										        <p ng-message="required">No deje este campo vacío.</p>
+										    </div>
+										</div>
+										<!-- categoría -->
+										<div class="form-group" ng-class="{ 'has-error': newCourseForm.category.$touched && newCourseForm.category.$invalid }">
+											<label for="category">Categoría</label>
+											<select id="category" name="category" class="form-control"
+												ng-model="newCourse.categoria"
+												ng-options="cat.id as cat.nombre for cat in categories"
+												required>
+												<option value="" selected>-- Elegir --</option>
+											</select>
+											<div class="help-block" ng-messages="newCourseForm.category.$error"
+												ng-if="newCourseForm.category.$touched">
+										        <p ng-message="required">Escoja una categoría</p>
+										    </div>
+										</div>
+										<!-- descripción -->
+										<div class="form-group">
+											<label for="description">Descripción</label>
+											<textarea class="form-control"
+												id="descripton" ng-model="newCourse.descripcion"
+												cols="20" rows="02" required></textarea>
+										</div>
+									</div>
+									<!-- información técnica -->
+									<div role="tabpanel" class="tab-pane fade in" id="tech">
+										<!-- créditos -->
+										<div class="form-group">
+											<label for="credits">Créditos</label>
+											<div class="input-group">
+												<span class="input-group-addon">
+													<i class="fa fa-lock"></i>
+												</span>
+												<input type="text" class="form-control"
+													id="credits" ng-model="newCourse.creditos"
+													ng-pattern="regex.int" required/>
+											</div>
+										</div>
+										<!-- duración -->
+										<div class="form-group">
+											<label for="duration">Duración (meses)</label>
+											<div class="input-group">
+												<span class="input-group-addon">
+													<i class="fa fa-calendar-o"></i>
+												</span>
+												<input type="text" class="form-control"
+													id="duration" ng-model="newCourse.duracion"
+													ng-pattern="regex.int" required/>
+											</div>
+										</div>
+										<!-- horas -->
+										<div class="form-group">
+											<label for="hours">Horas</label>
+											<div class="input-group">
+												<span class="input-group-addon">
+													<i class="fa fa-clock-o"></i>
+												</span>
+												<input type="text" class="form-control"
+													id="hours" ng-model="newCourse.horas"
+													ng-pattern="regex.int" required/>
+											</div>
+										</div>
+									</div>
+									<!-- inversión -->
+									<div role="tabpanel" class="tab-pane fade in" id="investment">
+										<!-- matrícula -->
+										<div class="form-group">
+											<label for="enrollment">Matrícula</label>
+											<div class="input-group">
+												<span class="input-group-addon">
+													<i class="fa fa-usd"></i>
+												</span>
+												<input type="text" class="form-control"
+													ng-model="newCourse.matricula" id="enrollment"
+													ng-pattern="regex.money" required>
+											</div>
+										</div>
+										<!-- módulo -->
+										<div class="form-group">
+											<label for="module">Módulo</label>
+											<div class="input-group">
+												<span class="input-group-addon">
+													<i class="fa fa-usd"></i>
+												</span>
+												<input type="text" class="form-control"
+													ng-model="newCourse.modulo" id="module"
+													ng-pattern="regex.money" required>
+											</div>
+										</div>
+										<!-- certificado -->
+										<div class="form-group">
+											<label for="certificate">Matrícula</label>
+											<div class="input-group">
+												<span class="input-group-addon">
+													<i class="fa fa-usd"></i>
+												</span>
+												<input type="text" class="form-control"
+													ng-model="newCourse.certificado" id="certificate"
+													ng-pattern="regex.money" required>
+											</div>
+										</div>
+									</div>
+								</div> <!-- END TAB CONTENT -->
+							</div> <!-- END BODY -->
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">Cancelar</button>
+								<button type="submit" class="btn btn-primary"
+									ng-disabled="!newCourseForm.$dirty || newCourseForm.$invalid">
+									<i class="fa fa-check"></i>
+									Registrar
+								</button>
+							</div>
+						</div> <!-- END MODAL-CONTENT -->
+					</div> <!-- END MODAL-DIALOG -->
+					</form>
+				</div> <!-- END MODAL -->
+			</section>
+
+		</section>
+
+		<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+		<script src="assets/js/angular-messages.min.js"></script>
+		<script src="https://rawgit.com/michaelbromley/angularUtils/master/src/directives/pagination/dirPagination.js"></script>
+		<script src="assets/js/controllers/datatable_controller.js"></script>
+		<script src="assets/js/app.js"></script>
+	</body>
+</html>
